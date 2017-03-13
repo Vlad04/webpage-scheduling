@@ -1,0 +1,65 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+.calc{
+  width: 40px;
+  height: 10px;
+}
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+.fondo{
+	background-image: url(05.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 200%;
+
+}
+
+#logo {
+	width: 400px;
+	height: 216px;
+	padding-left: 100px;
+	padding-bottom: 20px;
+}
+
+#logot {
+	width: 108;
+	height: 14;
+}
+
+#titulo {
+	font-family: "American Typewriter";
+}
+
+.pregunta {
+	font-family: "American Typewriter";
+	font-size: 100px;
+}
+
+section {
+
+  display: inline-block;
+  width: 40%;
+  margin: 0 1.5% 24px 1.5%;
+
+}
+
+section2 {
+
+  display: inline-block;
+  width: 80%;
+  margin: 0 1.5% 24px 1.5%;
+
+}

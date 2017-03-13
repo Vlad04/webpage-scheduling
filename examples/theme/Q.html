@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <link rel="icon" href="../../favicon.ico">
+
+   <title>Scheduling Algorithm</title>
+
+   <!-- Bootstrap core CSS -->
+   <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Bootstrap theme -->
+   <link href="../../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+   <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+   <!-- Custom styles for this template -->
+   <link href="theme.css" rel="stylesheet">
+
+   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+   <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+   <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!--[if lt IE 9]>
+     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+   <![endif]-->
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!--<link rel="STYLESHEET" type="text/css" href="dba_style/buttons.css" /> -->
+
+
+  <script type='text/javascript'>
+  //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+var number;
+var times = []; var waits = []; var tats = [];
+var total_wait = 0; var avg_wait =0; var total_tat = 0; var avg_tat =0;
+var throughput = 0;
+function addFields(){
+
+// Number of inputs to create
+   number = document.getElementById("member").value;
+// Container <div> where dynamic content will be placed
+  var container = document.getElementById("container");
+// Clear previous contents of the container
+  while (container.hasChildNodes()) {
+    container.removeChild(container.lastChild);
+  }
+  container.appendChild(document.createTextNode("Enter the CPU burst time of each process."));
+  container.appendChild(document.createElement("br"));
+  for (i=0;i<number;i++){
+    // Append a node with a random text
+    container.appendChild(document.createTextNode("P " + (i+1)));
+
+    // Create an <input> element, set its type and name attributes
+    var input = document.createElement("input");
+    input.type = "text";
+    input.name = "member" + i;      //Add new boxes according to the number that gives the user
+    input.id = "proc"+i;
+    container.appendChild(input);
+    container.appendChild(document.createTextNode("ms"));
+    // Append a line break
+    container.appendChild(document.createElement("br"));
+    }
+
+
+  }
+  function do_change(){
+    document.getElementById("calc").style.display = "block";
+  }
+
+  function printResults(){
+    var result_string = "Total wait time:                   "+ total_wait + "\n";
+    result_string +=    "Average wait time:              "+ avg_wait + "\n";
+    result_string +=    "Total turn around time:        "+ total_tat + "\n";
+    result_string +=    "Average turn around time:  "+ avg_tat + "\n";
+    result_string +=    "Throughput:                         "+ throughput + "\n";
+    var r = document.createElement("r");
+    r.setAttribute('style', 'white-space: pre;'); //this way new lines work
+    r.textContent = result_string;
+    var results = document.getElementById("results");
+    results.appendChild(r);
+  }
+
+  function createTable(){
+        var headers = ["Process number"," CPU burst time (ms)", " Wait time (ms)", " Turn around time (ms)"]
+        var tablesection = document.getElementById("tablesection");
+        var tabla   = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+        var cellText;
+      for (var i = 0; i < (times.length + 1); i++) { // rows
+        var hilera = document.createElement("tr");
+        for (var j = 0; j < 4; j++) { // columns
+          var celda = document.createElement("td");
+          if(i == 0){  // first row, here go the headers
+            cellText = headers[j];
+          }else{
+            if ( j == 0){
+              cellText = "P"+i;
+            }
+            else if (j == 1 ){
+              cellText = times[i-1];
+            }
+            else if (j == 2 ){
+              cellText = waits[i-1];
+            }
+            else if (j == 3 ){
+              cellText = tats[i-1];
+            }
+          }
+          var textoCelda = document.createTextNode(cellText);
+          celda.appendChild(textoCelda);
+          hilera.appendChild(celda);
+        }
+        tblBody.appendChild(hilera);
+      }
+      tabla.appendChild(tblBody);
+      tablesection.appendChild(tabla);
+      tabla.setAttribute("border", "2");
+  }
+
+  function calculate(){
+    var extra_tat, wait_time; // tat is turn around time
+    for(var i=0; i<number; i++){
+      times.push(Number(document.getElementById("proc"+i).value));
+      // if FCFS
+      if(i!=0) {
+        tat = tats[i-1] + times[i];
+        wait_time = (times[i-1] + waits[i-1]);
+      }
+      else {
+        tat = times[i];
+        wait_time = 0;
+      }
+      waits.push(wait_time);
+      tats.push(tat);
+      total_tat += tat;
+      total_wait += wait_time;
+    }
+    var processes = waits.length;
+    avg_tat = total_tat / processes;
+    avg_wait = total_wait / processes;
+    throughput = processes / tats[processes-1]; // may only work for FCFS
+    printResults();
+    createTable();
+  }
+
+
+  </script>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="theme.css" rel="stylesheet">
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+</head>
+
+
+
+
+<body class="fondo">
+  <div class="container theme-showcase" role="main">
+
+  <section>
+  <form name="form1" method="post" action="">
+    <div class="buttons">
+      <h1 id="titulo">Scheduling</h1>
+      Enter the number of processes you want: (max. 10) <br />
+      <input type="text" id="member" name="member" value=""> <br />
+      <br>
+      <a href="#" id="filldetails" onclick="addFields(); do_change();" class="btn btn-lg btn-success">
+        Add
+      </a>
+    </div>
+  </section>
+  <section>
+    <br>
+    <h4> Choose the scheduling algorithm: </h4> <br>
+    <form>
+      <input type="radio" name="alg" value="fcfs" checked="checked"> First Come First Serve (FCFS)
+      <input type="radio" name="alg" value="rr"> Round Robin<br>
+      <div id="quantum">
+        Time Quantum <br>
+        <input type="text"  name="quantum" value=""> <br>
+      </div>
+    </form>
+    <br>
+    <button type="submit" onclick="calculate();" class="btn btn-lg btn-success" name="calc" id="calc" style="display:none; font-size : 12px; width: 30%; height: 30px;">
+      Calculate
+    </button>
+  </section>
+  <section>
+    <div id="container"/>
+    <div class="container theme-showcase" role="main">
+    </div>
+  </section>
+  <section>
+
+    <h4> Results: </h4>
+    <div id="results" />
+  </section>
+  <section2>
+    <h4> Results Table: </h4>
+    <div id="tablesection"/>
+  </section2>
+
+</body>
+</html>
