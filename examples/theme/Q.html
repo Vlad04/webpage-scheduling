@@ -41,10 +41,10 @@
 
   <script type='text/javascript'>
   //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-var number;
-var times = []; var waits = []; var tats = [];
+var number; var fcfs = true; var quantum = 0;
+var times = []; var waits = []; var tats = []; var times_ex = [];
 var total_wait = 0; var avg_wait =0; var total_tat = 0; var avg_tat =0;
-var throughput = 0;
+var throughput = 0; var execs = [0,0,0,0]; finished = [false, false, false, false];
 function addFields(){
 
 // Number of inputs to create
@@ -88,12 +88,25 @@ function addFields(){
     r.setAttribute('style', 'white-space: pre;'); //this way new lines work
     r.textContent = result_string;
     var results = document.getElementById("results");
+    while (results.hasChildNodes()) {
+      results.removeChild(results.lastChild);
+    }
     results.appendChild(r);
+  }
+
+  function resetVars(){
+    times = []; waits = []; tats = [];
+    total_wait = 0; avg_wait =0; total_tat = 0; avg_tat =0;
+    throughput = 0; quantum = 0; times_ex = []; times_ex = [];
+    execs = [0,0,0,0]; finished = [false, false, false, false];
   }
 
   function createTable(){
         var headers = ["Process number"," CPU burst time (ms)", " Wait time (ms)", " Turn around time (ms)"]
         var tablesection = document.getElementById("tablesection");
+        while (tablesection.hasChildNodes()) {
+          tablesection.removeChild(tablesection.lastChild);
+        }
         var tabla   = document.createElement("table");
         var tblBody = document.createElement("tbody");
         var cellText;
@@ -128,28 +141,82 @@ function addFields(){
       tabla.setAttribute("border", "2");
   }
 
+  function identifyAlgorithm(){
+    if (document.getElementById('fcfs').checked) {
+      fcfs = true;
+    }else {
+      fcfs = false;
+      quantum = Number(document.getElementById("quantum").value);
+    }
+  }
+
   function calculate(){
-    var extra_tat, wait_time; // tat is turn around time
-    for(var i=0; i<number; i++){
-      times.push(Number(document.getElementById("proc"+i).value));
-      // if FCFS
-      if(i!=0) {
-        tat = tats[i-1] + times[i];
-        wait_time = (times[i-1] + waits[i-1]);
+    resetVars();
+    identifyAlgorithm();
+    var tat, wait_time; // tat is turn around time
+    var total_exec_time = 0;
+    if(fcfs){ // FCFS
+      for(var i=0; i<number; i++){
+        times.push(Number(document.getElementById("proc"+i).value));
+          if(i!=0) {
+            tat = tats[i-1] + times[i];
+            wait_time = (times[i-1] + waits[i-1]);
+          }
+          else {
+            tat = times[i];
+            wait_time = 0;
+          }
+          waits.push(wait_time);
+          tats.push(tat);
+          total_tat += tat;
+          total_wait += wait_time;
+          total_exec_time = tats[waits.length-1];
       }
-      else {
-        tat = times[i];
-        wait_time = 0;
+    } else { // RR
+      i = 0; remain_time = 0;
+      for(var i=0; i<number; i++){
+        times.push(Number(document.getElementById("proc"+i).value));
+        times_ex.push(Number(document.getElementById("proc"+i).value));
       }
-      waits.push(wait_time);
-      tats.push(tat);
-      total_tat += tat;
-      total_wait += wait_time;
+      var pxs = Number(number);
+      i=0; tats = [0,0,0,0]; waits = [0,0,0,0];
+      while(i<times_ex.length){
+        var pid = i % 4;
+        if(times_ex[i] <= quantum){
+          for(var a = 0; a< pxs; a++){
+              if(a!=pid && !finished[a]){
+                waits[a]+=times_ex[i];
+              }
+              if(!finished[a])
+                tats[a]+=times_ex[i];
+          }
+          execs[pid] += times_ex[i];
+        } else {
+          remain_time = times_ex[pid] - quantum;
+          times_ex.push(remain_time);
+          for(var a = 0; a< pxs; a++){
+              if(a!=pid && !finished[a]){
+                waits[a]+=quantum;
+              }
+              if(!finished[a])
+                tats[a]+=quantum;
+          }
+          execs[pid] += quantum;
+        }
+        if(execs[pid]==times[pid])  finished[pid]=true;
+        i++;
+      }
+      //sum all waits and all tats, before doing average
+      for(var b=0; b<pxs; b++){
+        total_tat += tats[b];
+        total_wait += waits[b];
+        total_exec_time += times[b];
+      }
     }
     var processes = waits.length;
     avg_tat = total_tat / processes;
     avg_wait = total_wait / processes;
-    throughput = processes / tats[processes-1]; // may only work for FCFS
+    throughput = processes / total_exec_time;
     printResults();
     createTable();
   }
@@ -207,12 +274,10 @@ function addFields(){
     <br>
     <h4> Choose the scheduling algorithm: </h4> <br>
     <form>
-      <input type="radio" name="alg" value="fcfs" checked="checked"> First Come First Serve (FCFS)
-      <input type="radio" name="alg" value="rr"> Round Robin<br>
-      <div id="quantum">
+      <input id="fcfs" type="radio" name="alg" value="fcfs" checked="checked"> First Come First Serve (FCFS)
+      <input id="rr" type="radio" name="alg" value="rr"> Round Robin<br>
         Time Quantum <br>
-        <input type="text"  name="quantum" value=""> <br>
-      </div>
+        <input id="quantum" type="text"  name="quantum" value="0"> <br>
     </form>
     <br>
     <button type="submit" onclick="calculate();" class="btn btn-lg btn-success" name="calc" id="calc" style="display:none; font-size : 12px; width: 30%; height: 30px;">
