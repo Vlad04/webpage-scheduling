@@ -174,7 +174,7 @@ function addFields(){
       var pxs = Number(number);
       i=0; tats = [0,0,0,0,0,0,0,0,0,0]; waits = [0,0,0,0,0,0,0,0,0,0];
       while(i<times_ex.length){
-        var pid = i % 4;
+        var pid = i % pxs;
         if(times_ex[i] <= quantum){
           for(var a = 0; a< pxs; a++){
               if(a!=pid && !finished[a]){
