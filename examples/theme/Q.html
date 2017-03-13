@@ -44,7 +44,8 @@
 var number; var fcfs = true; var quantum = 0;
 var times = []; var waits = []; var tats = []; var times_ex = [];
 var total_wait = 0; var avg_wait =0; var total_tat = 0; var avg_tat =0;
-var throughput = 0; var execs = [0,0,0,0]; finished = [false, false, false, false];
+var throughput = 0; var execs = [0,0,0,0,0,0,0,0,0,0];
+finished = [false, false, false, false, false, false, false, false, false, false];
 function addFields(){
 
 // Number of inputs to create
@@ -98,7 +99,8 @@ function addFields(){
     times = []; waits = []; tats = [];
     total_wait = 0; avg_wait =0; total_tat = 0; avg_tat =0;
     throughput = 0; quantum = 0; times_ex = []; times_ex = [];
-    execs = [0,0,0,0]; finished = [false, false, false, false];
+    execs = [0,0,0,0,0,0,0,0,0,0];
+    finished = [false, false, false, false, false, false, false, false, false, false];
   }
 
   function createTable(){
@@ -179,7 +181,7 @@ function addFields(){
         times_ex.push(Number(document.getElementById("proc"+i).value));
       }
       var pxs = Number(number);
-      i=0; tats = [0,0,0,0]; waits = [0,0,0,0];
+      i=0; tats = [0,0,0,0,0,0,0,0,0,0]; waits = [0,0,0,0,0,0,0,0,0,0];
       while(i<times_ex.length){
         var pid = i % 4;
         if(times_ex[i] <= quantum){
