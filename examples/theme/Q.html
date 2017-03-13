@@ -46,7 +46,6 @@ var times = []; var waits = []; var tats = []; var times_ex = [];
 var total_wait = 0; var avg_wait =0; var total_tat = 0; var avg_tat =0;
 var throughput = 0; var execs = [0,0,0,0]; finished = [false, false, false, false];
 function addFields(){
-
 // Number of inputs to create
    number = document.getElementById("member").value;
 // Container <div> where dynamic content will be placed
@@ -60,7 +59,6 @@ function addFields(){
   for (i=0;i<number;i++){
     // Append a node with a random text
     container.appendChild(document.createTextNode("P " + (i+1)));
-
     // Create an <input> element, set its type and name attributes
     var input = document.createElement("input");
     input.type = "text";
@@ -71,13 +69,10 @@ function addFields(){
     // Append a line break
     container.appendChild(document.createElement("br"));
     }
-
-
   }
   function do_change(){
     document.getElementById("calc").style.display = "block";
   }
-
   function printResults(){
     var result_string = "Total wait time:                   "+ total_wait + "\n";
     result_string +=    "Average wait time:              "+ avg_wait + "\n";
@@ -93,14 +88,12 @@ function addFields(){
     }
     results.appendChild(r);
   }
-
   function resetVars(){
     times = []; waits = []; tats = [];
     total_wait = 0; avg_wait =0; total_tat = 0; avg_tat =0;
     throughput = 0; quantum = 0; times_ex = []; times_ex = [];
     execs = [0,0,0,0]; finished = [false, false, false, false];
   }
-
   function createTable(){
         var headers = ["Process number"," CPU burst time (ms)", " Wait time (ms)", " Turn around time (ms)"]
         var tablesection = document.getElementById("tablesection");
@@ -140,7 +133,6 @@ function addFields(){
       tablesection.appendChild(tabla);
       tabla.setAttribute("border", "2");
   }
-
   function identifyAlgorithm(){
     if (document.getElementById('fcfs').checked) {
       fcfs = true;
@@ -149,7 +141,6 @@ function addFields(){
       quantum = Number(document.getElementById("quantum").value);
     }
   }
-
   function calculate(){
     resetVars();
     identifyAlgorithm();
@@ -220,8 +211,6 @@ function addFields(){
     printResults();
     createTable();
   }
-
-
   </script>
 
 
@@ -248,7 +237,6 @@ function addFields(){
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-
     <![endif]-->
 </head>
 
